@@ -14,6 +14,11 @@ datos db 50 dup('$'),'$'
 aux db 0
 contI db 0
 contJ db 0
+contCol db 0
+contTam db 0
+retard db 0
+corrimiento dw 0
+altura dw 150
 
 sep db 0ah, 0dh, '==============================================', '$'
 universidad db 0ah, 0dh, 'UNIVERSIDAD DE SAN CARLOS DE GUATEMALA', '$'
@@ -31,6 +36,8 @@ opcion4 db 0ah, 0dh, '4) Salir','$'
 
 menu2 db 0ah, 0dh, 'Tipos de Ordenamiento','$'
 opcion21 db 0ah, 0dh, '1) Ordenamiento BubbleSort','$'
+
+velocidad db 0ah, 0dh, 'Ingrese una velocidad (0-9)','$'
 
 descen db 0ah, 0dh, '1) Descendente','$'
 ascen db 0ah, 0dh, '2) Ascendente','$'
@@ -68,6 +75,12 @@ main proc
         je Generar
         cmp al, 34h
         je Salir
+        cmp al, 35h
+        je aberr
+		jmp menuPrincipal
+	aberr:
+		;modoV
+		getchar
 		jmp menuPrincipal
     Cargar:
         print saltoLinea
@@ -147,7 +160,25 @@ main proc
 		
 		getchar
         jmp menuPrincipal
-    Ordenar:
+	Ordenar:
+		print saltoLinea
+		print sep
+		print saltoLinea
+		print menu2
+		print opcion21
+		print saltoLinea
+		getchar
+		cmp al, 31h
+		je BUBBLESORT
+		jmp menuPrincipal
+    BUBBLESORT:
+		print saltoLinea
+		print velocidad
+		print saltoLinea
+		
+		getchar 
+		mov retard, al
+		
         print saltoLinea
         print sep
 		print saltoLinea
@@ -159,12 +190,13 @@ main proc
 		xor di, di
         getchar
 		cmp al, 31h
-		je DESCEND
+		je BUBDESCEND
 		cmp al, 32h
-		je ASCEND
+		je BUBASCEND
 		jmp menuPrincipal
-	DESCEND:
+	BUBDESCEND:
 		mov contI, 0
+		LimpiarPantalla
 		ciclo11:
 			cmp contI, 24
 			je terminarI1
@@ -185,12 +217,30 @@ main proc
 				ja entra1
 				jmp noentra1
 				entra1:
+					Determinar
 					mov aux, al
 					mov datos[si+1], bl
+					DeterminarFrecuencia1
 					mov cl, aux
 					mov datos[si], cl
-					print saltoLinea
-					print datos
+					;print saltoLinea
+					;print datos
+					ModoG
+					;xor bx, bx
+					mov contCol, 0
+					cicloColumnas:
+						mov altura, 150
+						cmp contCol, 25
+						je terminarCol
+						Distancia
+						Altu aux
+						PintarColumna
+						inc contCol
+						inc bx
+					jmp cicloColumnas
+					terminarCol:
+					Velocidades 500
+					ModoT
 				noentra1:
 				
 				inc si
@@ -203,7 +253,7 @@ main proc
 		getchar
 		jmp menuPrincipal
 		
-	ASCEND:	
+	BUBASCEND:	
 		mov contI, 0
 		ciclo1:
 			cmp contI, 24
@@ -225,8 +275,10 @@ main proc
 				ja entra
 				jmp noentra
 				entra:
+					Determinar
 					mov aux, al
 					mov datos[si], bl
+					DeterminarFrecuencia2
 					mov cl, aux
 					mov datos[si+1], cl
 					print saltoLinea
