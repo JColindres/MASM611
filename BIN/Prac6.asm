@@ -18,7 +18,7 @@ contCol db 0
 contTam db 0
 retard db 0
 corrimiento dw 0
-altura dw 150
+altura dw 150, '$'
 
 sep db 0ah, 0dh, '==============================================', '$'
 universidad db 0ah, 0dh, 'UNIVERSIDAD DE SAN CARLOS DE GUATEMALA', '$'
@@ -226,17 +226,24 @@ main proc
 					;print saltoLinea
 					;print datos
 					ModoG
-					;xor bx, bx
+					xor bx, bx
 					mov contCol, 0
 					cicloColumnas:
 						mov altura, 150
 						cmp contCol, 25
 						je terminarCol
+						cmp datos[bx], '$'
+						je terminarCol
 						Distancia
-						Altu aux
-						PintarColumna
+						;mov ax,@data
+						;mov ds,ax
+						Altu datos[bx]
+						;print altura
+						PintarColumna	
+						;mov ax, 0A000h
+						;mov ds, ax				
 						inc contCol
-						inc bx
+						inc bx	
 					jmp cicloColumnas
 					terminarCol:
 					Velocidades 500

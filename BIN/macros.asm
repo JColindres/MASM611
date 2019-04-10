@@ -296,8 +296,10 @@ endm
 
 PintarPixel macro x0, y0, color  
 push cx
+mov ax, 0A000h
+mov ds, ax
 mov ah, 0ch
-mov al, color ;color, n?mero representado del 0-255 (256 colores)
+mov al, color 
 mov bh, 0h
 mov dx, y0
 mov cx, x0
@@ -306,13 +308,25 @@ pop cx
 endm
 
 PintarColumna macro 
-LOCAL columna, juera
+LOCAL columna1, columna2, columna3, juera
 mov cx,150
-columna:
+columna1:
 cmp cx, altura
 je juera
 PintarPixel corrimiento,cx,04h  
-loop columna
+loop columna1
+mov cx,150
+columna2:
+cmp cx, altura
+je juera
+PintarPixel corrimiento+1,cx,04h  
+loop columna2
+mov cx,150
+columna3:
+cmp cx, altura
+je juera
+PintarPixel corrimiento+2,cx,04h  
+loop columna3
 juera:
 endm
 
@@ -326,6 +340,8 @@ LOCAL sesuno,sesdos,sestres,sescua,sescin,sesseis,sessiete,sesocho,sesnueve,set
 LOCAL setuno,setdos,settres,setcua,setcin,setseis,setsiete,setocho,setnueve,och
 LOCAL ouno,odos,otres,ocua,ocin,oseis,osiete,oocho,onueve,nov
 LOCAL nuno,ndos,ntres,ncua,ncin,nseis,nsiete,nocho,nnueve, final
+	mov ax,@data
+	mov ds,ax
 	mov al, num
 	cmp al, 100
 	ja salir
@@ -407,6 +423,7 @@ LOCAL nuno,ndos,ntres,ncua,ncin,nseis,nsiete,nocho,nnueve, final
 	je tocho
 	cmp al, 39
 	je tnueve
+	jmp final
 	uno:
 	mov altura, 149
 	jmp final
@@ -657,207 +674,3 @@ LOCAL cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez, once,
 	final:
 endm 
 
-Escribiraa macro handler, buffer, numbytes
-LOCAL errorcrear, efin
-mov ah, 40h
-mov bx, handler
-mov cx, 127
-lea dx, buffer
-int 21h
-jc errorcrear
-jmp efin
-errorcrear:
-    print errorcerrar
-efin:
-endm
-
-Escribirtablero macro
-LOCAL encabezado,cuerpo, pintarverde, pintada1, fin, pintarsepia, abretr, cierretr, pintadaaux, fin2,fin3, finhora, finhora1, finhora2, finhoraa, finhoraa1, finhoraa2, pintada, pintarnegro
-    xor si,si
-    xor di,di
-    encabezado:
-    mov al, encabezadohtml[si]
-    mov htmltablero[di],al 
-    inc si
-    inc di
-    cmp si,28
-    je cuerpo
-    jmp encabezado
-    cuerpo:
-    xor si,si
-
-    pintada:
-    xor bx,bx
-
-    cmp si, 8
-    je cierretr
-    cmp si, 16
-    je cierretr
-    cmp si, 24
-    je cierretr
-    cmp si, 32
-    je cierretr
-    cmp si, 40
-    je cierretr
-    cmp si, 48
-    je cierretr
-    cmp si, 56
-    je cierretr
-    cmp si, 64
-    je cierretr
-
-    pintadaaux:
-
-    xor bx,bx
-    cmp si, 0
-    je abretr
-    cmp si, 8
-    je abretr
-    cmp si, 16
-    je abretr
-    cmp si, 24
-    je abretr
-    cmp si, 32
-    je abretr
-    cmp si, 40
-    je abretr
-    cmp si, 48
-    je abretr
-    cmp si, 56
-    je abretr
-
-    cmp si, 64
-    je fin
-    mov al, tablero[si]
-    xor bx,bx
-    cmp al, 0
-    je pintarnegro
-    cmp al, 1
-    je pintarverde
-    cmp al, 2
-    je pintarsepia
-
-    pintarverde:
-    mov al, colorverde[bx]
-    mov htmltablero[di],al
-    inc di
-    inc bx
-    cmp bx, 42
-    je pintada1
-    jmp pintarverde
-
-    pintarsepia:
-    mov al, colorsepia[bx]
-    mov htmltablero[di],al
-    inc di
-    inc bx
-    cmp bx, 42
-    je pintada1
-    jmp pintarsepia
-
-    pintarnegro:
-    mov al, colornegro[bx]
-    mov htmltablero[di],al
-    inc di
-    inc bx
-    cmp bx, 42
-    je pintada1
-    jmp pintarnegro
-
-    pintada1:
-    inc si
-    jmp pintada
-
-    abretr:
-        mov al, abretr1[0]
-        mov htmltablero[di],al
-        inc di
-        mov al, abretr1[1]
-        mov htmltablero[di],al
-        inc di
-        mov al, abretr1[2]
-        mov htmltablero[di],al
-        inc di
-        mov al, abretr1[3]
-        mov htmltablero[di],al
-        inc di
-
-        mov al, tablero[si]
-        xor bx,bx
-        cmp al, 0
-        je pintarnegro
-        cmp al, 1
-        je pintarverde
-        cmp al, 2
-        je pintarsepia
-
-        inc si
-        jmp pintada
-
-    cierretr:
-        mov al, cierretr1[0]
-        mov htmltablero[di],al
-        inc di
-        mov al, cierretr1[1]
-        mov htmltablero[di],al
-        inc di
-        mov al, cierretr1[2]
-        mov htmltablero[di],al
-        inc di
-        mov al, cierretr1[3]
-        mov htmltablero[di],al
-        inc di
-        mov al, cierretr1[4]
-        mov htmltablero[di],al
-        inc di
-
-        jmp pintadaaux
-    fin:
-    xor si,si
-
-    finhora:
-    mov al, hora[si]
-    mov htmltablero[di],al 
-    inc si
-    inc di
-    cmp si,48
-    je finhoraa
-    jmp finhora
-
-    finhoraa:
-    xor si,si
-
-    finhora1:
-    mov al, hora2[si]
-    mov htmltablero[di],al 
-    inc si
-    inc di
-    cmp si,47
-    je finhoraa1
-    jmp finhora1
-
-    finhoraa1:
-    xor si,si
-    
-    finhora2:
-    mov al, hora3[si]
-    mov htmltablero[di],al 
-    inc si
-    inc di
-    cmp si,46
-    je finhoraa2
-    jmp finhora2
-
-    finhoraa2:
-    xor si,si
-
-    fin2:
-    mov al, piehtml[si]
-    mov htmltablero[di],al 
-    inc si
-    inc di
-    cmp si,22
-    je fin3
-    jmp fin2
-    fin3:
-endm
