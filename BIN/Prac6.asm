@@ -19,6 +19,8 @@ contTam db 0
 retard db 0
 corrimiento dw 0
 altura dw 150, '$'
+alturaAux db 150, '$'
+colorr db 0, '$'
 
 sep db 0ah, 0dh, '==============================================', '$'
 universidad db 0ah, 0dh, 'UNIVERSIDAD DE SAN CARLOS DE GUATEMALA', '$'
@@ -227,21 +229,27 @@ main proc
 					;print datos
 					ModoG
 					xor bx, bx
+					mov alturaAux, 150
 					mov contCol, 0
 					cicloColumnas:
 						mov altura, 150
 						cmp contCol, 25
 						je terminarCol
+						Distancia
+						mov ax,@data
+						mov ds,ax
 						cmp datos[bx], '$'
 						je terminarCol
-						Distancia
-						;mov ax,@data
-						;mov ds,ax
-						Altu datos[bx]
+						mov dl, datos[bx]
+						mov alturaAux, dl
+						Altu alturaAux
+						Color
+						cmp alturaAux, 150
+						ja terminarCol
+						PintarColumna
 						;print altura
-						PintarColumna	
-						;mov ax, 0A000h
-						;mov ds, ax				
+						mov ax, 0A000h
+						mov ds, ax				
 						inc contCol
 						inc bx	
 					jmp cicloColumnas

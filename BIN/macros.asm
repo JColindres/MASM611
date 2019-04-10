@@ -294,12 +294,12 @@ mov ax, 0A000h
 mov ds, ax 
 endm
 
-PintarPixel macro x0, y0, color  
+PintarPixel macro x0, y0, colour 
 push cx
 mov ax, 0A000h
 mov ds, ax
 mov ah, 0ch
-mov al, color 
+mov al, colour 
 mov bh, 0h
 mov dx, y0
 mov cx, x0
@@ -309,25 +309,57 @@ endm
 
 PintarColumna macro 
 LOCAL columna1, columna2, columna3, juera
+;cmp altura, 'r'
+;je juera:
 mov cx,150
 columna1:
 cmp cx, altura
 je juera
-PintarPixel corrimiento,cx,04h  
+PintarPixel corrimiento,cx, 04h  
 loop columna1
-mov cx,150
-columna2:
-cmp cx, altura
-je juera
-PintarPixel corrimiento+1,cx,04h  
-loop columna2
-mov cx,150
-columna3:
-cmp cx, altura
-je juera
-PintarPixel corrimiento+2,cx,04h  
-loop columna3
+;mov cx,150
+;columna2:
+;cmp cx, altura
+;je juera
+;PintarPixel corrimiento+1,cx,04h  
+;loop columna2
+;mov cx,150
+;columna3:
+;cmp cx, altura
+;je juera
+;PintarPixel corrimiento+2,cx,04h  
+;loop columna3
 juera:
+endm
+
+COLOR macro
+LOCAL rango1, rango2, rango3, rango4, rango5, fin
+cmp alturaAux, 21
+jb rango1
+cmp alturaAux, 41
+jb rango2
+cmp alturaAux, 61
+jb rango3
+cmp alturaAux, 81
+jb rango4
+cmp alturaAux, 100
+jb rango5
+jmp fin
+rango1:
+mov colorr, 04h
+jmp fin
+rango2:
+mov colorr, 01h
+jmp fin
+rango3:
+mov colorr, 0eh
+jmp fin
+rango4:
+mov colorr, 02h
+jmp fin
+rango5:
+mov colorr, 0fh
+fin:
 endm
 
 Altu macro num
