@@ -10,7 +10,12 @@ bufferentrada db 50 dup('$')
 handlerEntrada dw ?
 bufferInfo db 10000 dup('$')
 
+nomnom db 100 dup('$'),'$'
+
 contadorLetras dw 0
+aux1 dw 0
+aux2 dw 0
+contadorAUX dw 0
 
 sep db 0ah, 0dh, '==============================================', '$'
 universidad db 0ah, 0dh, 'UNIVERSIDAD DE SAN CARLOS DE GUATEMALA', '$'
@@ -189,7 +194,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			
 			mov cx,10000
 			contarCAP:
-				call capP1
+				call capP
 			loop contarCAP
 			print saltoLinea
 			print sep
@@ -200,6 +205,22 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			jmp menuPrincipal
 		BUSYREM:
 		INVPAL:
+			print saltoLinea
+			
+			xor si, si
+			mov contadorLetras, 0
+			
+			mov cx,10000
+			contarINV:
+				call invP
+			loop contarINV
+			print saltoLinea
+			print sep
+			print saltoLinea
+			print bufferInfo
+			print sep
+			getchar
+			jmp menuPrincipal
 		REPDIP:
 		REPHIAT:
 		REPTRIP:
@@ -323,7 +344,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 		ret
 	minusP endp
 	
-	capP1 proc far
+	capP proc far
 		mov al,bufferInfo[si]
     	cmp bufferInfo[si], 64
     	ja CAP1 
@@ -332,10 +353,15 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
     	jmp nainCAP
     	CAP1: 
       		cmp bufferInfo[si], 91
-        	jb CAPFinal
+        	jb MINIR
        		cmp bufferInfo[si], 96
    			ja CAP2
         	jmp nainCAP
+		MINIR:
+        	mov al, bufferInfo[si]
+			add al, 32
+        	mov bufferInfo[si], al
+        	jmp CAPFinal
        	CAP2: 
         	cmp bufferInfo[si], 123
         	jb CAPFinal
@@ -367,8 +393,9 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         	jmp nainCAPP
         	segCAP:
         		inc si
-        		push si
-        		push contadorLetras
+        		mov aux1, si
+        		mov ax, contadorLetras
+				mov aux2, ax
         		inc si
         		CICLO:
         		    mov al,bufferInfo[si]
@@ -384,7 +411,27 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         			je ESPALABRA
         			cmp bufferInfo[si], 32
         			je ESPALABRA  
+        			cmp bufferInfo[si], 34
+        			je ESPALABRA 
         			cmp bufferInfo[si], 36
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 39
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 41
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 44
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 46
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 58
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 59
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 63
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 93
+        			je ESPALABRA 
+        			cmp bufferInfo[si], 125
         			je ESPALABRA 
         			cmp bufferInfo[si], 64
         			ja CAP12
@@ -409,17 +456,18 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         				inc contadorLetras
         				jmp CICLO
         			ESPALABRA:   
-        				pop si
+        				mov si, aux1
         				mov al, bufferInfo[si]
         				sub al, 32
         				mov bufferInfo[si], al
         				mov si, contadorLetras
 						print bufferInfo
-						getchar
+						;getchar
         				jmp nainCAP
         			nainCAP2:
-        			pop si 
-        			pop contadorLetras
+        			mov si, aux1 
+					mov ax, aux2
+        			mov contadorLetras, ax
         			jmp nainCAP 
        	YEET:
        	    mov cx,1   
@@ -429,7 +477,150 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
        		inc si
        		inc contadorLetras
 		ret
-	capP1 endp
+	capP endp
+	
+	invP proc far
+		mov al,bufferInfo[si]
+    	cmp bufferInfo[si], 64
+    	ja invCAP1 
+    	cmp bufferInfo[si+1], 36
+    	je invYEET  
+    	jmp invnainCAP
+    	invCAP1: 
+      		cmp bufferInfo[si], 91
+        	jb invCAPFinal
+       		cmp bufferInfo[si], 96
+   			ja invCAP2
+        	jmp invnainCAP
+       	invCAP2: 
+        	cmp bufferInfo[si], 123
+        	jb invCAPFinal
+        	jmp invnainCAP
+        invCAPFinal: 
+        	dec si 
+        	cmp bufferInfo[si], 9
+        	je invsegCAP 
+        	cmp bufferInfo[si], 10
+        	je invsegCAP 
+        	cmp bufferInfo[si], 11
+        	je invsegCAP 
+        	cmp bufferInfo[si], 12
+        	je invsegCAP 
+        	cmp bufferInfo[si], 13
+        	je invsegCAP 
+        	cmp bufferInfo[si], 32
+        	je invsegCAP
+        	cmp bufferInfo[si], 34
+        	je invsegCAP
+        	cmp bufferInfo[si], 39
+        	je invsegCAP
+        	cmp bufferInfo[si], 40
+        	je invsegCAP
+        	cmp bufferInfo[si], 91
+        	je invsegCAP
+        	cmp bufferInfo[si], 123
+        	je invsegCAP
+        	jmp invnainCAPP
+        	invsegCAP:
+        		inc si
+				
+				mov contadorAUX, 1
+				mov bx,contadorAUX
+				mov al, bufferInfo[si]
+				mov nomnom[bx],al
+				
+        		mov aux1, si
+        		mov ax, contadorLetras
+				mov aux2, ax
+        		inc si
+        		invCICLO:
+        		    mov al,bufferInfo[si]
+        			cmp bufferInfo[si], 9
+        			je invESPALABRA
+        			cmp bufferInfo[si], 10
+        			je invESPALABRA
+        			cmp bufferInfo[si], 11
+        			je invESPALABRA
+        			cmp bufferInfo[si], 12
+        			je invESPALABRA
+        			cmp bufferInfo[si], 13
+        			je invESPALABRA
+        			cmp bufferInfo[si], 32
+        			je invESPALABRA  
+        			cmp bufferInfo[si], 34
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 36
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 39
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 41
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 44
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 46
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 58
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 59
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 63
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 93
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 125
+        			je invESPALABRA 
+        			cmp bufferInfo[si], 64
+        			ja invCAP12
+        			jmp invnainCAP2
+        			invCAP12:
+        				cmp bufferInfo[si], 91
+        				jb invCAPFinal2
+        				cmp bufferInfo[si], 96
+        				ja invCAP22
+        				jmp invnainCAP2
+        			invCAP22:
+        				cmp bufferInfo[si], 123
+        				jb invCAPFinal2
+        				jmp invnainCAP2
+        			invCAPFinal2:
+						inc contadorAUX
+						
+						mov bx,contadorAUX
+						mov al, bufferInfo[si]
+						mov nomnom[bx],al
+						
+        				inc si
+        				inc contadorLetras
+        				jmp invCICLO
+        			invESPALABRA:   
+        				mov si, aux1
+        				
+						mov bx,contadorAUX
+						mov cx,contadorAUX
+						CICLOn:
+							mov al,nomnom[bx]
+							mov bufferInfo[si],al
+							inc si
+							dec bx
+						loop CICLOn
+						
+        				mov si, contadorLetras
+						print bufferInfo
+        				jmp invnainCAP
+        			invnainCAP2:
+        			mov si, aux1 
+					mov ax, aux2
+        			mov contadorLetras, ax
+        			jmp invnainCAP 
+       	invYEET:
+       	    mov cx,1   
+       	invnainCAPP:
+       		inc si
+       	invnainCAP:
+       		inc si
+       		inc contadorLetras
+		ret
+	invP endp
 
 end 
 	
