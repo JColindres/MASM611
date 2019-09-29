@@ -32,7 +32,7 @@ contadorAUX2 dw 0
 listaPalabras db 2500 dup('$'),'$'
 listaDiptongos db 2500 dup(' ')
 listaHiatos db 2500 dup('$'),'$'
-listaTriptongos db 2500 dup('$'),'$'
+listaTriptongos db 2500 dup(' ')
 
 contadorPalab dw 0
 contadorDip dw 0
@@ -245,6 +245,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			jmp menuPrincipal
 		REPDIP:
 			call encabezadoDIP
+			call encabezadoTRIP
 			print saltoLinea
 			
 			xor si, si
@@ -260,11 +261,21 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			print bufferInfo
 			print sep
 			call finREPGENERAL
+			call finREPGENERALTRIP
 			Editar archDIP, listaDiptongos, handCrear
 			getchar
 			jmp menuPrincipal
 		REPHIAT:
 		REPTRIP:
+			print saltoLinea
+			print saltoLinea
+			print sep
+			print saltoLinea
+			print bufferInfo
+			print sep
+			Editar archTRI, listaTriptongos, handCrear
+			getchar
+			jmp menuPrincipal
 		REPFINAL:
 		Salir:
 			mov ah, 4ch
@@ -674,7 +685,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 	verificarP proc far
 		mov al,bufferInfo[si]
     	cmp bufferInfo[si], 64
-    	ja veriCAP1 
+    	ja veriCAP1
     	cmp bufferInfo[si+1], 36
     	je veriYEET  
     	jmp verinainCAP
@@ -687,6 +698,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
        	veriCAP2: 
         	cmp bufferInfo[si], 123
         	jb veriCAPFinal
+			cmp bufferInfo[si], 00E1h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00E9h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00EDh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00F3h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00FAh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00C1h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00C9h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00CDh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00D3h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00DAh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00E4h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00EBh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00EFh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00F6h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00FCh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00C4h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00CBh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00CFh
+			je veriCAPFinal
+			cmp bufferInfo[si], 00D6h
+			je veriCAPFinal
+			cmp bufferInfo[si], 00DCh
+			je veriCAPFinal		
+			cmp bufferInfo[si], 00F1h
+			je veriCAPFinal		
+			cmp bufferInfo[si], 00D1h
+			je veriCAPFinal		
         	jmp verinainCAP
         veriCAPFinal: 
         	dec si 
@@ -762,7 +817,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         			cmp bufferInfo[si], 125
         			je veriESPALABRA 
         			cmp bufferInfo[si], 64
-        			ja veriCAP12
+        			ja veriCAP12	
         			jmp verinainCAP2
         			veriCAP12:
         				cmp bufferInfo[si], 91
@@ -773,6 +828,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         			veriCAP22:
         				cmp bufferInfo[si], 123
         				jb veriCAPFinal2
+						cmp bufferInfo[si], 00E1h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00E9h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00EDh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00F3h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00FAh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00C1h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00C9h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00CDh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00D3h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00DAh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00E4h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00EBh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00EFh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00F6h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00FCh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00C4h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00CBh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00CFh
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00D6h
+						je veriCAPFinal2
+						cmp bufferInfo[si], 00DCh
+						je veriCAPFinal2		
+						cmp bufferInfo[si], 00F1h
+						je veriCAPFinal2		
+						cmp bufferInfo[si], 00D1h
+						je veriCAPFinal2	
         				jmp verinainCAP2
         			veriCAPFinal2:
 						inc contadorAUX
@@ -875,7 +974,6 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 		cmp bufferInfo[si], 104
 		je esHACHE
 		jmp noLetra
-		esHACHE:
 		esLetraYAS:
 			inc contadorAUX2
 			cmp contadorAUX2, 2
@@ -883,13 +981,71 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			cmp contadorAUX2, 3
 			je esTRIPTONGO
 			jmp veriSigue
-			esTRIPTONGO:
-				print nombre
-				Editar archTRI, nomnom, handCrear
-				jmp veriSigue
 			esDIPHIAT:
-				print nomnom
-				print saltoLinea
+				cmp bufferInfo[si+1], 65
+				je esLetraYAS
+				cmp bufferInfo[si+1], 69
+				je esLetraYAS
+				cmp bufferInfo[si+1], 73
+				je esLetraYAS
+				cmp bufferInfo[si+1], 79
+				je esLetraYAS
+				cmp bufferInfo[si+1], 85
+				je esLetraYAS
+				cmp bufferInfo[si+1], 97
+				je esLetraYAS
+				cmp bufferInfo[si+1], 101
+				je esLetraYAS
+				cmp bufferInfo[si+1], 105
+				je esLetraYAS
+				cmp bufferInfo[si+1], 111
+				je esLetraYAS
+				cmp bufferInfo[si+1], 117
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00E1h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00E9h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00EDh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00F3h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00FAh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00C1h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00C9h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00CDh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00D3h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00DAh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00E4h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00EBh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00EFh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00F6h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00FCh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00C4h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00CBh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00CFh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00D6h
+				je esLetraYAS
+				cmp bufferInfo[si+1], 00DCh
+				je esLetraYAS
+				cmp bufferInfo[si+1], 89
+				je esLetraYAS
+				cmp bufferInfo[si+1], 121
+				je esLetraYAS
 				mov otroaux3, bx
 				mov otroaux2, ax
 				
@@ -977,368 +1133,818 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 
 				mov bx, otroaux3
 				jmp veriSigue
+			esTRIPTONGO:
+				mov otroaux3, bx
+				mov otroaux2, ax
+				
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'<'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'t'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'r'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'>'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'<'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'t'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'d'
+				mov listaTriptongos[bx],al
+				inc contadorTri
+				mov bx, contadorTri
+				mov al,'>'
+				mov listaTriptongos[bx],al
+				
+				mov ax,otroaux2
+				mov otroaux1, si
+				mov si, 1
+				
+				mov otroaux22, cx
+				mov cx, contadorAUX
+				TRIPLOOP:
+					inc contadorTri
+					mov bx, contadorTri
+					mov otroaux2, ax
+					mov al, nomnom[si]
+					mov listaTriptongos[bx],	al
+					mov ax, otroaux2
+					inc si
+				LOOP TRIPLOOP
+				mov cx, otroaux22
+				mov si, otroaux1
+				
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'<'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'/'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'t'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'d'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'>'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'<'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'/'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'t'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'r'
+				inc contadorTri
+				mov bx, contadorTri
+				mov listaTriptongos[bx],'>'
+
+				mov bx, otroaux3
+				jmp veriSigue
 		noLetra:
 			mov contadorAUX2, 0
+		esHACHE:
 		veriSigue:
 			inc si
 		ret
 	verificarP2 endp
 
 	encabezadoDIP proc far
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'h'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'m'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'l'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'h'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'a'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'d'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'i'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'l'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'D'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'i'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'p'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'n'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'g'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'s'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'i'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'l'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'h'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'a'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'d'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'b'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'d'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'y'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'a'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'b'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'l'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],' '
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'b'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'r'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'d'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'r'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'='
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],34
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'1'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],34
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'r'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'h'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'D'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'i'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'p'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'n'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'g'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'s'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'h'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'r'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				ret
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'h'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'m'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'l'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'h'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'a'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'d'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'i'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'l'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'D'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'i'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'p'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'n'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'g'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'s'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'i'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'l'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'h'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'a'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'d'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'b'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'d'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'y'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'a'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'b'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'l'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],' '
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'b'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'r'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'d'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'r'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'='
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],34
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'1'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],34
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'r'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'h'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'D'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'i'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'p'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'n'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'g'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'s'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'h'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'r'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+	ret
 	encabezadoDIP endp
 	
-	finREPGENERAL proc far
-	
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'a'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'b'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'l'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'e'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'b'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'o'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'d'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'y'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'<'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'/'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'h'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'t'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'m'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'l'
-				inc contadorDip
-				mov bx, contadorDip
-				mov listaDiptongos[bx],'>'
-				ret
+	finREPGENERAL proc far	
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'a'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'b'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'l'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'e'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'b'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'o'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'d'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'y'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'<'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'h'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'t'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'m'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'l'
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'>'
+		ret
 	finREPGENERAL endp
+
+	encabezadoTRIP proc far
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'h'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'m'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'l'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'h'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'a'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'d'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'i'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'l'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'T'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'r'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'i'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'p'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'n'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'g'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'s'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'i'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'l'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'h'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'a'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'d'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'b'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'d'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'y'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'a'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'b'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'l'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],' '
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'b'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'r'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'d'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'r'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'='
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],34
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'1'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],34
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'r'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'h'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'T'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'r'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'i'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'p'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'n'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'g'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'s'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'h'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'r'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+	ret
+	encabezadoTRIP endp
+	
+	finREPGENERALTRIP proc far	
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'a'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'b'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'l'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'e'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'b'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'o'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'d'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'y'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'<'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'h'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'t'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'m'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'l'
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'>'
+		ret
+	finREPGENERALTRIP endp
+
 end 
 	
 	

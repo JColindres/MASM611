@@ -104,7 +104,7 @@ LOCAL err2, fin
 	; write to file:
 	mov ah,40h
 	mov bx,handle
-	mov cx,1000
+	mov cx,2500
 	lea dx,informacion
 	int 21h
 	jc err2
