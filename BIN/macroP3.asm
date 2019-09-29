@@ -86,19 +86,39 @@ inc si
 loop ciclo
 endm 
 
-CrearArchivo macro buffer, handler
-LOCAL erroralcrear, fin
-    mov ah, 3ch
-    mov cx, 00h
-    lea dx, buffer
-    int 21h
-    jc erroralcrear
-    mov handler,ax
-    jmp fin
-erroralcrear:
-    print err4
+Editar macro archivo, informacion, handle
+LOCAL err2, fin
+	mov ah, 3ch
+	mov cx, 0
+	mov dx, offset archivo
+	int 21h
+	jc err2
+	mov handle, ax
+	; seek:
+	mov ah, 42h
+	mov bx, handle
+	mov al, 0
+	mov cx, 0
+	mov dx, 2
+	int 21h
+	; write to file:
+	mov ah,40h
+	mov bx,handle
+	mov cx,1000
+	lea dx,informacion
+	int 21h
+	jc err2
+	; close
+	mov ah, 3eh
+	mov bx, handle
+	int 21h
+	jmp fin
+err2:
+	print err4
 fin:
+	nop
 endm
+
 
 LimpiarPantalla macro
 mov ah, 02h

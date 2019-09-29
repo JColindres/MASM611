@@ -1,16 +1,2 @@
-//=======================================
-_Estos _no _cumplen _con _el _patron _letra+ _por _lo _tanto _no _se _les _aplican _los _filtros _de :
-_Capital _e _invertir
-.se .tomará .como .delimitador .del .token. palabra. todos. los. espacios. .tabuladores. espacio. saltodelinea. retorno. de. carro. etc.
-
-//===== Aplicar. Capital.
-todo. el. texto. de. arriba. no. deberá. sufrir. cambios.
-El lenguaje ensamblador o assembler (en inglés: assembly language y la abreviación asm) es un lenguaje de programación de bajo nivel. Consiste en un conjunto de mnemónicos que representan instrucciones básicas para los computadores, microprocesadores, microcontroladores y otros circuitos integrados programables. Implementa una representación simbólica de los códigos de máquina binarios y otras constantes necesarias para programar una arquitectura de procesador y constituye la representación más directa del código máquina específico para cada arquitectura legible por un programador. Cada arquitectura de procesador tiene su propio lenguaje ensamblador que usualmente es definida por el fabricante de hardware, y está basada en los mnemónicos que simbolizan los pasos de procesamiento (las instrucciones), los registros del procesador, las posiciones de memoria y otras características del lenguaje. Un lenguaje ensamblador es por lo tanto específico de cierta arquitectura de computador física (o virtual). Esto está en contraste con la mayoría de los lenguajes de programación de alto nivel, que idealmente son portables.
-
-//====== Debe_ marcar_ diptongos_
-Cuerdo	Feudal
-Ruidoso	Cuento
-Lourdes	Viudo
-Afeitar	Muelas
-Peinado	Cuadras
-Cuerdas pingüino
+ Cuerdo Feudal
+ hooola
