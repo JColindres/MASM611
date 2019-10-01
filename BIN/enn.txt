@@ -1,3 +1,14 @@
+//=======================================
+_Estos _no _cumplen _con _el _patron _letra+ _por _lo _tanto _no _se _les _aplican _los _filtros _de :
+_Capital _e _invertir
+.se .tomará .como .delimitador .del .token. palabra. todos. los. espacios. .tabuladores. espacio. saltodelinea. retorno. de. carro. etc.
+
+//===== Aplicar. Capital.
+todo. el. texto. de. arriba. no. deberá. sufrir. cambios.
+El lenguaje ensamblador o assembler (en inglés: assembly language y la abreviación asm) es un lenguaje de programación de bajo nivel. Consiste en un conjunto de mnemónicos que representan instrucciones básicas para los computadores, microprocesadores, microcontroladores y otros circuitos integrados programables. Implementa una representación simbólica de los códigos de máquina binarios y otras constantes necesarias para programar una arquitectura de procesador y constituye la representación más directa del código máquina específico para cada arquitectura legible por un programador. Cada arquitectura de procesador tiene su propio lenguaje ensamblador que usualmente es definida por el fabricante de hardware, y está basada en los mnemónicos que simbolizan los pasos de procesamiento (las instrucciones), los registros del procesador, las posiciones de memoria y otras características del lenguaje. Un lenguaje ensamblador es por lo tanto específico de cierta arquitectura de computador física (o virtual). Esto está en contraste con la mayoría de los lenguajes de programación de alto nivel, que idealmente son portables.
+
+//==== APLICAR. ESPEJO.
+Fue usado principalmente en los inicios del desarrollo de software, cuando aún no se contaba con potentes lenguajes de alto nivel y los recursos eran limitados. Actualmente se utiliza con frecuencia en ambientes académicos y de investigación, especialmente cuando se requiere la manipulación directa de hardware, alto rendimiento, o un uso de recursos controlado y reducido. También es utilizado en el desarrollo de controladores de dispositivo (en inglés, device drivers) y en el desarrollo de sistemas operativos, debido a la necesidad del acceso directo a las instrucciones de la máquina. Muchos dispositivos programables (como los microcontroladores) aún cuentan con el ensamblador como la única manera de ser manipulados.
 
 //====== Debe_ marcar_ diptongos_
 Cuerdo	Feudal
@@ -28,3 +39,43 @@ Anunciéis	Cuautitlán	Lieis
 Apreciéis	Cuautla	Limpiáis
 Apremiéis	Despreciéis	Limpiauñas
 Arreciáis	Dioico	Luau
+
+//======= Parte de la Letra tetris RAP PORTA
+//======= BUSCAR Y REEMPLAZAR LA PALABRA assembler por rap
+Mi forma de vida es el assembler
+mi movida es el assembler
+mi querida es el assembler
+porque entonces yo canto con bases de assembler
+pa' que primos también aprendan un poco de assembler
+no debo encerrarme sólo en el assembler
+debo vivir estilos lejanos del assembler
+pa' que el assembler sea assembler de verdad
+y no una simple copia barata del assembler.
+assembler estilo
+estilo mas assembler
+porque assembler para mi es cada vez mas assembler
+y assembler para ti es una mierda de assembler
+porque nunca se nace sabiendo de assembler
+se empieza aprendiendo del assembler
+porque assembler mas assembler es igual a dos assemblers
+porque puedo fardar pero sólo de assembler
+no llevo sangre en las venas
+yo llevo assembler.
+Me inyectaron sobredosis de assembler
+el virus fue assembler, mi antídoto es assembler
+mi cabeza sólo piensa en assembler
+hip hop no es lo mismo que assembler
+no
+el assembler es mi assembler a callar
+piezas del puzzle encajar
+petar la instrumental
+variar y no pares con assembler
+pues no es cuestion de edad
+verás que clavo estas letras detras
+mi assembler esta quizá querrá intentar marcar un record assembler
+porque sigo pensando que vivo pa el assembler
+assemblerear es lo mio punto sigue mi assembler
+con un ritmo del Soma bestial clavo el assembler en el bit
+lo hago especial
+bonus track
+un crack

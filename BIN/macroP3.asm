@@ -75,6 +75,104 @@ fin:
 
 endm
 
+Abrir2 macro rutaentrada, entrada
+    LOCAL erroralabrir, fin
+
+    mov ah, 3dh
+    mov al, 02h
+    lea dx, rutaentrada
+    int 21h
+    jc erroralabrir
+    mov entrada, ax
+    jmp fin
+
+erroralabrir:
+    print err1
+	jmp algopaso2
+fin:
+
+endm
+
+cerrar2 macro entrada
+    LOCAL erroralcerrar, fin
+    mov ah, 3eh
+    mov bx, entrada
+    int 21h
+    jc erroralcerrar
+    jmp fin
+
+erroralcerrar:
+    print err2
+	jmp algopaso2
+fin:
+
+endm
+
+Leer2 macro entrada, info, nobytes
+LOCAL erroralleer, fin
+mov ah, 3fh
+mov bx, entrada
+mov cx, nobytes
+lea dx, info
+int 21h
+jc erroralleer
+jmp fin
+erroralleer:
+    print err3
+	jmp algopaso2
+fin:
+
+endm
+
+Abrir3 macro rutaentrada, entrada
+    LOCAL erroralabrir, fin
+
+    mov ah, 3dh
+    mov al, 02h
+    lea dx, rutaentrada
+    int 21h
+    jc erroralabrir
+    mov entrada, ax
+    jmp fin
+
+erroralabrir:
+    print err1
+	jmp algopaso3
+fin:
+
+endm
+
+cerrar3 macro entrada
+    LOCAL erroralcerrar, fin
+    mov ah, 3eh
+    mov bx, entrada
+    int 21h
+    jc erroralcerrar
+    jmp fin
+
+erroralcerrar:
+    print err2
+	jmp algopaso3
+fin:
+
+endm
+
+Leer3 macro entrada, info, nobytes
+LOCAL erroralleer, fin
+mov ah, 3fh
+mov bx, entrada
+mov cx, nobytes
+lea dx, info
+int 21h
+jc erroralleer
+jmp fin
+erroralleer:
+    print err3
+	jmp algopaso3
+fin:
+
+endm
+
 Limpiar macro buffer, numbytes, caracter
 LOCAL ciclo
 xor si, si
@@ -94,21 +192,18 @@ LOCAL err2, fin
 	int 21h
 	jc err2
 	mov handle, ax
-	; seek:
 	mov ah, 42h
 	mov bx, handle
 	mov al, 0
 	mov cx, 0
 	mov dx, 2
 	int 21h
-	; write to file:
 	mov ah,40h
 	mov bx,handle
-	mov cx,2500
+	mov cx,8000
 	lea dx,informacion
 	int 21h
 	jc err2
-	; close
 	mov ah, 3eh
 	mov bx, handle
 	int 21h
@@ -117,6 +212,24 @@ err2:
 	print err4
 fin:
 	nop
+endm
+
+CONTARCARACTERES macro buffer, contador
+LOCAL BUSCARCICLO, finBuscar, seguirBuscar, acabar
+	xor si,si 	
+	mov cx, 2500
+	BUSCARCICLO:
+		cmp buffer[si],36
+		je finBuscar
+		jmp seguirBuscar
+		finBuscar:
+			mov cx,0
+			jmp acabar
+		seguirBuscar:
+			inc si
+			inc contador
+		acabar:		
+	LOOP BUSCARCICLO
 endm
 
 

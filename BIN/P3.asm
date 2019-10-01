@@ -1,3 +1,4 @@
+;MASM
 include macroP3.asm
 
 .model small
@@ -10,10 +11,20 @@ bufferentrada db 50 dup('$')
 handlerEntrada dw ?
 bufferInfo db 10000 dup('$')
 
+bufferentrada2 db 50 dup('$')
+handlerEntrada2 dw ?
+bufferInfo2 db 2500 dup('$')
+
+bufferentrada3 db 50 dup('$')
+handlerEntrada3 dw ?
+bufferInfo3 db 2500 dup('$')
+
+bufferInfoRespaldo db 5000 dup('$')
+
 archDIP db 'REPDIP.html ',0
 archHIA db 'REPHIAT.html',0
 archTRI db 'REPTRIP.html',0
-archFIN db 'REPFINAL.html',0
+archFIN db 'REPFINAL.txt',0
 handCrear dw ?
 
 nomnom db 100 dup(' '),'$'
@@ -29,15 +40,31 @@ otroaux3 dw 0
 contadorAUX dw 0
 contadorAUX2 dw 0
 
-listaPalabras db 2500 dup('$'),'$'
-listaDiptongos db 2500 dup(' ')
-listaHiatos db 2500 dup('$'),'$'
-listaTriptongos db 2500 dup(' ')
+listaPalabras db 8000 dup(' ')
+listaDiptongos db 8000 dup(' ')
+listaHiatos db 8000 dup('$'),'$'
+listaTriptongos db 8000 dup(' ')
 
 contadorPalab dw 0
 contadorDip dw 0
 contadorHia dw 0
 contadorTri dw 0
+
+contadorPalab2 dw 0
+contadorPalab3 dw 0
+
+horas DB ?, '$'
+minutos DB ?, '$'
+segundos DB ?, '$'
+dia_mes DB ?, '$'
+mes DB ?, '$'
+
+dia_mes_conv DB ?, ?, '$'
+mes_conv DB ?, ?, '$'
+anio_conv DB '1', '9', '$'
+horas_conv DB ?, ?, '$'
+min_conv DB ?, ?, '$'
+seg_conv DB ?, ?, '$'
 
 sep db 0ah, 0dh, '==============================================', '$'
 universidad db 0ah, 0dh, 'UNIVERSIDAD DE SAN CARLOS DE GUATEMALA', '$'
@@ -129,6 +156,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 				je Salir
 			jmp menuPrincipal
 		Cargar:
+			mov contadorPalab, 0
 			print saltoLinea
 			print pedirRuta
 			Limpiar bufferentrada, SIZEOF bufferentrada, 24h
@@ -145,7 +173,8 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			Cerrar handlerEntrada
 			algopaso:
 			print sep
-			print saltoLinea		
+			print saltoLinea
+			call repifinal
 			getchar
 			jmp menuPrincipal
 		AMAYUS:
@@ -176,6 +205,8 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			print saltoLinea
 			print bufferInfo
 			print sep
+			call seAPLICO
+			call filtroMAYUS
 			getchar
 			jmp menuPrincipal
 		AMINUS:
@@ -206,6 +237,8 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			print saltoLinea
 			print bufferInfo
 			print sep
+			call seAPLICO
+			call filtroMINUS
 			getchar
 			jmp menuPrincipal
 		ACAPITAL:
@@ -223,9 +256,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			print saltoLinea
 			print bufferInfo
 			print sep
+			call seAPLICO
+			call filtroCAPI
 			getchar
 			jmp menuPrincipal
 		BUSYREM:
+			print saltoLinea
+			print pedirRuta
+			Limpiar bufferentrada2, SIZEOF bufferentrada2, 24h
+			ObtenerRuta bufferentrada2
+			print bufferentrada2
+			Abrir2 bufferentrada2,handlerEntrada2
+			Limpiar bufferInfo2, SIZEOF bufferInfo2, 24h
+			Leer2 handlerEntrada2, bufferInfo2,SIZEOF bufferInfo2
+			print saltoLinea
+			print sep
+			print saltoLinea
+			print bufferInfo2
+
+			Cerrar2 handlerEntrada2
+			algopaso2:
+			print sep
+			print saltoLinea
+			getchar
+			
+			print saltoLinea
+			print pedirRuta
+			Limpiar bufferentrada3, SIZEOF bufferentrada3, 24h
+			ObtenerRuta bufferentrada3
+			print bufferentrada3
+			Abrir3 bufferentrada3, handlerEntrada3
+			Limpiar bufferInfo3, SIZEOF bufferInfo3, 24h
+			Leer3 handlerEntrada3, bufferInfo3,SIZEOF bufferInfo3
+			print saltoLinea
+			print sep
+			print saltoLinea
+			print bufferInfo3
+
+			Cerrar3 handlerEntrada3
+			algopaso3:
+			print sep
+			print saltoLinea
+			getchar
+			call reemplazar
+			jmp menuPrincipal
 		INVPAL:
 			print saltoLinea
 			
@@ -241,6 +315,8 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			print saltoLinea
 			print bufferInfo
 			print sep
+			call seAPLICO
+			call filtroINV
 			getchar
 			jmp menuPrincipal
 		REPDIP:
@@ -277,6 +353,15 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			getchar
 			jmp menuPrincipal
 		REPFINAL:
+			print saltoLinea
+			print saltoLinea
+			print sep
+			print saltoLinea
+			print bufferInfo
+			print sep
+			Editar archFIN, listaPalabras, handCrear
+			getchar
+			jmp menuPrincipal
 		Salir:
 			mov ah, 4ch
 			mov al, al
@@ -426,6 +511,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
        	CAP2: 
         	cmp bufferInfo[si], 123
         	jb CAPFinal
+			cmp bufferInfo[si], 00E1h
+			je CAPFinal
+			cmp bufferInfo[si], 00E9h
+			je CAPFinal
+			cmp bufferInfo[si], 00EDh
+			je CAPFinal
+			cmp bufferInfo[si], 00F3h
+			je CAPFinal
+			cmp bufferInfo[si], 00FAh
+			je CAPFinal
+			cmp bufferInfo[si], 00C1h
+			je CAPFinal
+			cmp bufferInfo[si], 00C9h
+			je CAPFinal
+			cmp bufferInfo[si], 00CDh
+			je CAPFinal
+			cmp bufferInfo[si], 00D3h
+			je CAPFinal
+			cmp bufferInfo[si], 00DAh
+			je CAPFinal
+			cmp bufferInfo[si], 00E4h
+			je CAPFinal
+			cmp bufferInfo[si], 00EBh
+			je CAPFinal
+			cmp bufferInfo[si], 00EFh
+			je CAPFinal
+			cmp bufferInfo[si], 00F6h
+			je CAPFinal
+			cmp bufferInfo[si], 00FCh
+			je CAPFinal
+			cmp bufferInfo[si], 00C4h
+			je CAPFinal
+			cmp bufferInfo[si], 00CBh
+			je CAPFinal
+			cmp bufferInfo[si], 00CFh
+			je CAPFinal
+			cmp bufferInfo[si], 00D6h
+			je CAPFinal
+			cmp bufferInfo[si], 00DCh
+			je CAPFinal		
+			cmp bufferInfo[si], 00F1h
+			je CAPFinal		
+			cmp bufferInfo[si], 00D1h
+			je CAPFinal		
         	jmp nainCAP
         CAPFinal: 
         	dec si 
@@ -511,6 +640,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         			CAP22:
         				cmp bufferInfo[si], 123
         				jb CAPFinal2
+						cmp bufferInfo[si], 00E1h
+						je CAPFinal2
+						cmp bufferInfo[si], 00E9h
+						je CAPFinal2
+						cmp bufferInfo[si], 00EDh
+						je CAPFinal2
+						cmp bufferInfo[si], 00F3h
+						je CAPFinal2
+						cmp bufferInfo[si], 00FAh
+						je CAPFinal2
+						cmp bufferInfo[si], 00C1h
+						je CAPFinal2
+						cmp bufferInfo[si], 00C9h
+						je CAPFinal2
+						cmp bufferInfo[si], 00CDh
+						je CAPFinal2
+						cmp bufferInfo[si], 00D3h
+						je CAPFinal2
+						cmp bufferInfo[si], 00DAh
+						je CAPFinal2
+						cmp bufferInfo[si], 00E4h
+						je CAPFinal2
+						cmp bufferInfo[si], 00EBh
+						je CAPFinal2
+						cmp bufferInfo[si], 00EFh
+						je CAPFinal2
+						cmp bufferInfo[si], 00F6h
+						je CAPFinal2
+						cmp bufferInfo[si], 00FCh
+						je CAPFinal2
+						cmp bufferInfo[si], 00C4h
+						je CAPFinal2
+						cmp bufferInfo[si], 00CBh
+						je CAPFinal2
+						cmp bufferInfo[si], 00CFh
+						je CAPFinal2
+						cmp bufferInfo[si], 00D6h
+						je CAPFinal2
+						cmp bufferInfo[si], 00DCh
+						je CAPFinal2		
+						cmp bufferInfo[si], 00F1h
+						je CAPFinal2		
+						cmp bufferInfo[si], 00D1h
+						je CAPFinal2	
         				jmp nainCAP2
         			CAPFinal2:
         				inc si
@@ -556,6 +729,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
        	invCAP2: 
         	cmp bufferInfo[si], 123
         	jb invCAPFinal
+			cmp bufferInfo[si], 00E1h
+			je invCAPFinal
+			cmp bufferInfo[si], 00E9h
+			je invCAPFinal
+			cmp bufferInfo[si], 00EDh
+			je invCAPFinal
+			cmp bufferInfo[si], 00F3h
+			je invCAPFinal
+			cmp bufferInfo[si], 00FAh
+			je invCAPFinal
+			cmp bufferInfo[si], 00C1h
+			je invCAPFinal
+			cmp bufferInfo[si], 00C9h
+			je invCAPFinal
+			cmp bufferInfo[si], 00CDh
+			je invCAPFinal
+			cmp bufferInfo[si], 00D3h
+			je invCAPFinal
+			cmp bufferInfo[si], 00DAh
+			je invCAPFinal
+			cmp bufferInfo[si], 00E4h
+			je invCAPFinal
+			cmp bufferInfo[si], 00EBh
+			je invCAPFinal
+			cmp bufferInfo[si], 00EFh
+			je invCAPFinal
+			cmp bufferInfo[si], 00F6h
+			je invCAPFinal
+			cmp bufferInfo[si], 00FCh
+			je invCAPFinal
+			cmp bufferInfo[si], 00C4h
+			je invCAPFinal
+			cmp bufferInfo[si], 00CBh
+			je invCAPFinal
+			cmp bufferInfo[si], 00CFh
+			je invCAPFinal
+			cmp bufferInfo[si], 00D6h
+			je invCAPFinal
+			cmp bufferInfo[si], 00DCh
+			je invCAPFinal		
+			cmp bufferInfo[si], 00F1h
+			je invCAPFinal		
+			cmp bufferInfo[si], 00D1h
+			je invCAPFinal		
         	jmp invnainCAP
         invCAPFinal: 
         	dec si 
@@ -642,6 +859,50 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
         			invCAP22:
         				cmp bufferInfo[si], 123
         				jb invCAPFinal2
+						cmp bufferInfo[si], 00E1h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00E9h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00EDh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00F3h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00FAh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00C1h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00C9h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00CDh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00D3h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00DAh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00E4h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00EBh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00EFh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00F6h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00FCh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00C4h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00CBh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00CFh
+						je invCAPFinal2
+						cmp bufferInfo[si], 00D6h
+						je invCAPFinal2
+						cmp bufferInfo[si], 00DCh
+						je invCAPFinal2		
+						cmp bufferInfo[si], 00F1h
+						je invCAPFinal2		
+						cmp bufferInfo[si], 00D1h
+						je invCAPFinal2	
         				jmp invnainCAP2
         			invCAPFinal2:
 						inc contadorAUX
@@ -1539,6 +1800,146 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 		inc contadorDip
 		mov bx, contadorDip
 		mov listaDiptongos[bx],'>'
+		
+		mov ah, 2ch
+		int 21h
+		
+		mov horas, ch
+		mov minutos, cl
+		mov segundos, dh
+		
+		mov ah, 2ah
+		int 21h
+		
+		mov mes, dh
+		mov dia_mes, dl
+		
+		mov al,[dia_mes]
+		mov cl,10
+		mov ah,0
+		div cl
+		or ax,3030h
+		mov bx, offset dia_mes_conv
+		mov [bx],al
+		inc bx
+		mov [bx],ah
+
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, dia_mes_conv[0]
+		mov listaDiptongos[bx], al
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, dia_mes_conv[1]
+		mov listaDiptongos[bx], al
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		
+		mov al, [mes]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset mes_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, mes_conv[0]
+		mov listaDiptongos[bx], al
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, mes_conv[1]
+		mov listaDiptongos[bx], al
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'/'
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, anio_conv[0]
+		mov listaDiptongos[bx], al
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, anio_conv[1]
+		mov listaDiptongos[bx], al
+
+		mov al, [horas]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset horas_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],'-'
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, horas_conv[0]
+		mov listaDiptongos[bx], al
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, horas_conv[1]
+		mov listaDiptongos[bx], al
+				
+		Mostrar_minutos:
+		mov al, [minutos]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset min_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],':'
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, min_conv[0]
+		mov listaDiptongos[bx], al
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, min_conv[1]
+		mov listaDiptongos[bx], al
+
+		Mostrar_segundos:
+		mov al, [segundos]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset seg_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov listaDiptongos[bx],':'
+		
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, seg_conv[0]
+		mov listaDiptongos[bx], al
+		inc contadorDip
+		mov bx, contadorDip
+		mov al, seg_conv[1]
+		mov listaDiptongos[bx], al
+		
 		inc contadorDip
 		mov bx, contadorDip
 		mov listaDiptongos[bx],'<'
@@ -1900,6 +2301,146 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 		inc contadorTri
 		mov bx, contadorTri
 		mov listaTriptongos[bx],'>'
+		
+		mov ah, 2ch
+		int 21h
+		
+		mov horas, ch
+		mov minutos, cl
+		mov segundos, dh
+		
+		mov ah, 2ah
+		int 21h
+		
+		mov mes, dh
+		mov dia_mes, dl
+		
+		mov al,[dia_mes]
+		mov cl,10
+		mov ah,0
+		div cl
+		or ax,3030h
+		mov bx, offset dia_mes_conv
+		mov [bx],al
+		inc bx
+		mov [bx],ah
+
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, dia_mes_conv[0]
+		mov listaTriptongos[bx], al
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, dia_mes_conv[1]
+		mov listaTriptongos[bx], al
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		
+		mov al, [mes]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset mes_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, mes_conv[0]
+		mov listaTriptongos[bx], al
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, mes_conv[1]
+		mov listaTriptongos[bx], al
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'/'
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, anio_conv[0]
+		mov listaTriptongos[bx], al
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, anio_conv[1]
+		mov listaTriptongos[bx], al
+
+		mov al, [horas]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset horas_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],'-'
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, horas_conv[0]
+		mov listaTriptongos[bx], al
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, horas_conv[1]
+		mov listaTriptongos[bx], al
+				
+		Mostrar_minutos:
+		mov al, [minutos]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset min_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],':'
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, min_conv[0]
+		mov listaTriptongos[bx], al
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, min_conv[1]
+		mov listaTriptongos[bx], al
+
+		Mostrar_segundos:
+		mov al, [segundos]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset seg_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov listaTriptongos[bx],':'
+		
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, seg_conv[0]
+		mov listaTriptongos[bx], al
+		inc contadorTri
+		mov bx, contadorTri
+		mov al, seg_conv[1]
+		mov listaTriptongos[bx], al
+		
 		inc contadorTri
 		mov bx, contadorTri
 		mov listaTriptongos[bx],'<'
@@ -1945,6 +2486,545 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 		ret
 	finREPGENERALTRIP endp
 
+	repifinal proc far
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'J'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'o'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'s'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],00E9h
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'P'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'b'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'o'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'2'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'0'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'1'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'6'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'0'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'2'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'7'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'1'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'3'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10
+		
+		mov ah, 2ch
+		int 21h
+		
+		mov horas, ch
+		mov minutos, cl
+		mov segundos, dh
+		
+		mov ah, 2ah
+		int 21h
+		
+		mov mes, dh
+		mov dia_mes, dl
+		
+		mov al,[dia_mes]
+		mov cl,10
+		mov ah,0
+		div cl
+		or ax,3030h
+		mov bx, offset dia_mes_conv
+		mov [bx],al
+		inc bx
+		mov [bx],ah
+
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, dia_mes_conv[0]
+		mov listaPalabras[bx], al
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, dia_mes_conv[1]
+		mov listaPalabras[bx], al
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'/'
+		
+		mov al, [mes]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset mes_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, mes_conv[0]
+		mov listaPalabras[bx], al
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, mes_conv[1]
+		mov listaPalabras[bx], al
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'/'
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, anio_conv[0]
+		mov listaPalabras[bx], al
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, anio_conv[1]
+		mov listaPalabras[bx], al
+
+		mov al, [horas]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset horas_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'-'
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, horas_conv[0]
+		mov listaPalabras[bx], al
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, horas_conv[1]
+		mov listaPalabras[bx], al
+				
+		Mostrar_minutos:
+		mov al, [minutos]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset min_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],':'
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, min_conv[0]
+		mov listaPalabras[bx], al
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, min_conv[1]
+		mov listaPalabras[bx], al
+
+		Mostrar_segundos:
+		mov al, [segundos]
+		mov cl, 10
+		mov ah, 0
+		div cl
+		or ax, 3030h
+		mov bx, offset seg_conv
+		mov [bx], al
+		inc bx
+		mov [bx], ah
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],':'
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, seg_conv[0]
+		mov listaPalabras[bx], al
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov al, seg_conv[1]
+		mov listaPalabras[bx], al
+		
+		
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10
+	ret
+	repifinal endp	
+	
+	seAPLICO proc far
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'-'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'S'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'e'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'p'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'i'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'c'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],00F3h
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'e'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'f'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'i'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'t'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'r'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'o'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+	ret
+	seAPLICO endp
+	
+	filtroMAYUS proc far
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'M'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'y'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'u'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'s'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'c'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'u'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10
+	ret	
+	filtroMAYUS endp
+	
+	filtroMINUS proc far	
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'M'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'i'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'n'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'u'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'s'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'c'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'u'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10	
+	ret
+	filtroMINUS endp 
+	
+	filtroCAPI proc far
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'C'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'p'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'i'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'t'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10	
+	ret
+	filtroCAPI endp 
+	
+	filtroINV proc far
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'I'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'n'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'v'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'e'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'r'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'t'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'i'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'r'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10		
+	ret
+	filtroINV endp 
+	
+	filtroBYR proc far
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'B'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'u'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'s'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'c'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'r'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'y'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],' '
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'R'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'e'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'e'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'m'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'p'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'l'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'z'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'a'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],'r'
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],13
+		inc contadorPalab
+		mov bx, contadorPalab
+		mov listaPalabras[bx],10	
+	ret
+	filtroBYR endp 
+	
+	reemplazar proc far
+	mov contadorPalab2, 0
+	mov contadorPalab3, 0
+	mov contadorLetras, 0
+	
+	CONTARCARACTERES bufferInfo, contadorLetras
+	CONTARCARACTERES bufferInfo2, contadorPalab2
+	CONTARCARACTERES bufferInfo3, contadorPalab3
+	
+	xor si,si
+	mov cx, 6000
+	BUSCARCICLO:
+		mov al, bufferInfo2[0]
+		cmp bufferInfo[si], al
+		je hayCoincidencia
+		jmp nohayCoin
+		hayCoincidencia:
+			mov aux2, si
+			mov aux1, cx
+			mov bx, 1
+			mov cx, contadorPalab2
+			BUSCARCICLO2:
+				mov al, bufferInfo2[bx]
+				cmp bufferInfo[si], al
+				je hayCoincidencia2
+				mov cx, 0
+				jmp nohayCoin2
+				hayCoincidencia2:
+					print seccion
+					inc si
+					inc bx
+				nohayCoin2:
+					
+			LOOP BUSCARCICLO2
+			mov si, aux2
+			mov cx, aux1
+		nohayCoin:
+			inc si
+	LOOP BUSCARCICLO
+	ret
+	reemplazar endp
 end 
 	
 	
