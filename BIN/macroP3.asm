@@ -11,6 +11,20 @@ getChar macro
     int 21h
 endm
 
+getTexto macro buffer
+LOCAL INICIO,FIN
+	xor si,si
+INICIO:
+	getChar
+	cmp al,0dh
+	je FIN
+	mov buffer[si],al
+	inc si
+	jmp INICIO
+FIN:
+	mov buffer[si],'$'
+endm
+
 obtenerRuta macro buffer
     LOCAL ObtenerChar, FinOT
     xor si,si
@@ -231,6 +245,66 @@ LOCAL BUSCARCICLO, finBuscar, seguirBuscar, acabar
 		acabar:		
 	LOOP BUSCARCICLO
 endm
+
+LimpiarBufferLectura macro
+ 	xor si,si
+ 	jmp jj2
+ 	jj:
+ 	 inc si
+ 	jj2:
+ 		mov al,bufferInfo[si]
+ 		cmp al,24h
+		je salir1
+		mov bufferInfo[si],24h
+	jmp jj 
+	salir1:
+
+ endm
+
+
+ ActualizarBufferLectura macro
+ 	xor si,si
+ 	jmp ABL2
+ 	ABL:
+ 		inc si
+ 	ABL2:
+ 		mov al,bufferInfoAuxiliar[si]
+ 		cmp al,24h
+		je salir2
+		mov bufferInfo[si],al
+	jmp ABL
+	salir2:
+
+ endm
+
+ LimpiarBufferLecturaNuevo macro
+ 	xor si,si
+ 	jmp jj4
+ 	jj3:
+ 	 inc si
+ 	jj4:
+ 		mov al,bufferInfoAuxiliar[si]
+ 		cmp al,24h
+		je salir3
+		mov bufferInfoAuxiliar[si],24h
+	jmp jj3 
+	salir3:
+
+ endm
+
+ ActualizarBufferEscritura macro
+ 	xor si,si
+ 	jmp jj6
+ 	jj5:
+ 	 inc si
+ 	jj6:
+ 		mov al,bufferInfo[si]
+ 		cmp al,24h
+		je salir4
+		mov bufferInfoFinal[si],al
+	jmp jj5 
+	salir4:
+ endm
 
 
 LimpiarPantalla macro

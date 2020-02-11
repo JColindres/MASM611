@@ -11,15 +11,12 @@ bufferentrada db 50 dup('$')
 handlerEntrada dw ?
 bufferInfo db 10000 dup('$')
 
-bufferentrada2 db 50 dup('$')
-handlerEntrada2 dw ?
-bufferInfo2 db 2500 dup('$')
+bufferInfo2 db 250 dup('$')
 
-bufferentrada3 db 50 dup('$')
-handlerEntrada3 dw ?
-bufferInfo3 db 2500 dup('$')
+bufferInfo3 db 250 dup('$')
 
-bufferInfoRespaldo db 5000 dup('$')
+bufferInfoAuxiliar db 7000 dup('$')
+bufferInfoFinal db 7000 dup('$')
 
 archDIP db 'REPDIP.html ',0
 archHIA db 'REPHIAT.html',0
@@ -261,44 +258,10 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			getchar
 			jmp menuPrincipal
 		BUSYREM:
-			print saltoLinea
-			print pedirRuta
-			Limpiar bufferentrada2, SIZEOF bufferentrada2, 24h
-			ObtenerRuta bufferentrada2
-			print bufferentrada2
-			Abrir2 bufferentrada2,handlerEntrada2
-			Limpiar bufferInfo2, SIZEOF bufferInfo2, 24h
-			Leer2 handlerEntrada2, bufferInfo2,SIZEOF bufferInfo2
-			print saltoLinea
-			print sep
-			print saltoLinea
-			print bufferInfo2
-
-			Cerrar2 handlerEntrada2
-			algopaso2:
-			print sep
-			print saltoLinea
-			getchar
-			
-			print saltoLinea
-			print pedirRuta
-			Limpiar bufferentrada3, SIZEOF bufferentrada3, 24h
-			ObtenerRuta bufferentrada3
-			print bufferentrada3
-			Abrir3 bufferentrada3, handlerEntrada3
-			Limpiar bufferInfo3, SIZEOF bufferInfo3, 24h
-			Leer3 handlerEntrada3, bufferInfo3,SIZEOF bufferInfo3
-			print saltoLinea
-			print sep
-			print saltoLinea
-			print bufferInfo3
-
-			Cerrar3 handlerEntrada3
-			algopaso3:
-			print sep
-			print saltoLinea
-			getchar
 			call reemplazar
+			call seAPLICO
+			call filtroBYR
+			getchar
 			jmp menuPrincipal
 		INVPAL:
 			print saltoLinea
@@ -360,6 +323,7 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 			print bufferInfo
 			print sep
 			Editar archFIN, listaPalabras, handCrear
+			Editar archFIN, bufferInfo, handCrear
 			getchar
 			jmp menuPrincipal
 		Salir:
@@ -2985,44 +2949,124 @@ err4 db 0ah, 0dh, 'Error al crear el archivo!!','$'
 	filtroBYR endp 
 	
 	reemplazar proc far
-	mov contadorPalab2, 0
-	mov contadorPalab3, 0
-	mov contadorLetras, 0
 	
-	CONTARCARACTERES bufferInfo, contadorLetras
-	CONTARCARACTERES bufferInfo2, contadorPalab2
-	CONTARCARACTERES bufferInfo3, contadorPalab3
+			print saltoLinea
+			print pedirRuta
+			Limpiar bufferInfo2, SIZEOF bufferInfo2, 24h
+			getTexto bufferInfo2
+			print bufferInfo2
+			print saltoLinea
+			print sep
+			print saltoLinea
+			
+			print saltoLinea
+			print pedirRuta
+			Limpiar bufferInfo3, SIZEOF bufferInfo3, 24h
+			getTexto bufferInfo3
+			print bufferInfo3
+			print saltoLinea
+			print sep
+			print saltoLinea
 	
-	xor si,si
-	mov cx, 6000
-	BUSCARCICLO:
-		mov al, bufferInfo2[0]
-		cmp bufferInfo[si], al
-		je hayCoincidencia
-		jmp nohayCoin
-		hayCoincidencia:
-			mov aux2, si
-			mov aux1, cx
-			mov bx, 1
-			mov cx, contadorPalab2
-			BUSCARCICLO2:
-				mov al, bufferInfo2[bx]
-				cmp bufferInfo[si], al
-				je hayCoincidencia2
-				mov cx, 0
-				jmp nohayCoin2
-				hayCoincidencia2:
-					print seccion
-					inc si
-					inc bx
-				nohayCoin2:
-					
-			LOOP BUSCARCICLO2
-			mov si, aux2
-			mov cx, aux1
-		nohayCoin:
-			inc si
-	LOOP BUSCARCICLO
+	xor si, si
+			xor cx, cx
+			xor bx,bx
+			xor di,di
+			mov cx,00h
+			jmp ComparacionesBR
+
+			VerificarOtraVez:
+				LimpiarBufferLectura
+				ActualizarBufferLectura
+				LimpiarBufferLecturaNuevo
+				
+				mov si,cx
+				xor cx, cx
+				xor bx,bx
+				xor di,di
+				mov cx,00h
+			jmp ComparacionesBR
+
+			Limpiarrr:
+				mov cx,si
+			CompletarbufferLecturaNuevo:
+				mov al,bufferInfo[di]
+				cmp al,24h
+				je VerificarOtraVez
+				mov bufferInfoAuxiliar[si],al
+				inc di
+				inc si
+			jmp CompletarbufferLecturaNuevo
+				
+			Volver:
+				mov cx,00h
+
+			PalabraVieja:
+				mov bx,cx
+				mov al,bufferInfo2[bx]
+				cmp al,24h
+				je  Limpiarrr
+				inc di
+				inc cx
+			jmp PalabraVieja
+			PalabraNueva:
+				mov bx,cx 
+				
+				mov al,bufferInfo3[bx]
+				cmp al,24h
+				je  Volver
+				mov bufferInfoAuxiliar[si],al
+				inc cx
+				inc si
+
+			jmp PalabraNueva
+
+			Reemplazando:
+				mov al,bufferInfo[si]
+				mov bufferInfoAuxiliar[si],al
+				cmp si,di
+				je PalabraNueva
+				cmp al,24h;----------------------->dolar
+				je FinComparacionesBR
+				inc si
+			jmp Reemplazando
+			Reemplaza:
+				;print probar				
+				xor si, si
+				mov cx,00h
+			jmp Reemplazando
+				
+			LetraIgual:
+				;print probar2
+				inc si
+				inc cx
+
+				mov bx,cx
+				mov al ,bufferInfo2[bx]
+				cmp al,0dh
+				je Reemplaza
+				cmp al,24h  ;---------------------->dolar
+				je Reemplaza
+				cmp al,bufferInfo[si]
+				je LetraIgual
+			jmp AumentoBR
+			AumentoBR:
+				inc si
+			ComparacionesBR:
+				mov di,si
+				mov cx,00h
+				mov al,bufferInfo[si]
+				cmp al,24h  ;--------------------------->dolar
+				je FinComparacionesBR
+				
+				cmp al,bufferInfo2[0]
+				je LetraIgual
+
+			jmp AumentoBR
+			FinComparacionesBR:
+				ActualizarBufferEscritura
+			print bufferInfo
+			print sep
 	ret
 	reemplazar endp
 end 

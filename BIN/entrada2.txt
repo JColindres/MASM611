@@ -47,10 +47,10 @@ Averiéis	Envidiéis	Paraguay
 Averiguáis	Estudiéis	Parodiéis
 
 //================= BUSCAR Y REEMPLAZAR
-Es importante tener en cuenta que los sistemas operativos funcionan tanto en las computadoras como en otros dispositivos electrónicos que usan microprocesadores (  teléfonos móviles  , reproductores de DVD , etc . ) . En el caso de Windáws , su versión estándar funciona con computadoras , aunque también existe una versión para teléfonos ( Windáws Mobile ) .
+Es importante tener en cuenta que los sistemas operativos funcionan tanto en las computadoras como en otros dispositivos electrónicos que usan microprocesadores (  teléfonos móviles  , reproductores de DVD , etc . ) . En el caso de Windóws , su versión estándar funciona con computadoras , aunque también existe una versión para teléfonos ( Windóws Mobile ) .
 
 Precisamente en el año 2013 este software se encuentra celebrando su treinta aniversario pues fue el 10 de noviembre de 1983 cuando Bill Gates se animó a presentar a aquel . No obstante , es cierto que no sería hasta dos años más tarde cuando el citado producto no comenzó a comercializarse en todo el mundo .
 
 En aquel momento llegó al mercado presentándose como una extensión del conocido sistema MS-DOS y con una serie de características entre las que destacaba que el usuario se veía favorecido por las utilidades que tenía a su disposición así como la facilidad de manejo de las mismas .
 
-Desde aquel entonces hasta nuestros días Microsoft Windáws ha presentado diversas versiones con el claro objetivo de ir adaptándose a los tiempos y , sobre todo , a las necesidades que tenía el usuario en todo momento . Así , entre aquellas tendríamos que destacar Windáws NT , Windáws 95 , Windáws 98 , Windáws 2000 , Windáws XP , Windáws Vista , Windáws 7 y Windáws 8 , que es la última hasta el momento .
+Desde aquel entonces hasta nuestros días Microsoft Windóws ha presentado diversas versiones con el claro objetivo de ir adaptándose a los tiempos y , sobre todo , a las necesidades que tenía el usuario en todo momento . Así , entre aquellas tendríamos que destacar Windóws NT , Windóws 95 , Windóws 98 , Windóws 2000 , Windóws XP , Windóws Vista , Windóws 7 y Windóws 8 , que es la última hasta el momento .
